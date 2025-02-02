@@ -1,6 +1,6 @@
 
 # Project Name
-Milad2Gol Repo-Prompt WebApp
+Repo-Prompt
 
 A React-based application that loads and manipulates files from a selected directory via the File System Access API. It generates comprehensive prompts by combining user instructions, custom instructions, and file contents, then allows applying XML-based code changes back to the directory.
 
