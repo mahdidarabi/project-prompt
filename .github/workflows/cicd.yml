@@ -1,6 +1,7 @@
 name: Deploy to Github Pages
 
 on:
+  workflow_dispatch: # Allows manual triggering
   push:
     branches:
       - main
@@ -8,6 +9,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Allows pushing to the gh-pages branch
+      pages: write     # Required for GitHub Pages (if using the pages action)
+      id-token: write  # Required for OIDC token (if using the pages action)
 
     steps:
       - name: Checkout code
