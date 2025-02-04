@@ -16,10 +16,10 @@ import {
 } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
 import { styled } from '@mui/material/styles'
-
 import { useFileStore } from '../../store/fileStore'
 import { useToastStore } from '../../store/toastStore'
 import { applyJsonChanges } from '../../utils/apply-json-changes.ts'
+import { runApplyJsonChangesBDDTests } from '../../utils/apply-json-changes-tests.ts'
 
 interface Props {
   open: boolean
@@ -100,6 +100,7 @@ export default function ApplyChangesModal({ open, onClose }: Props) {
 
   const [jsonText, setJsonText] = useState('')
   const [isApplying, setIsApplying] = useState(false)
+  const [isRunningTests, setIsRunningTests] = useState(false)
 
   const handleClose = () => {
     onClose()
@@ -121,6 +122,28 @@ export default function ApplyChangesModal({ open, onClose }: Props) {
       showErrorToast('Error applying changes!')
     } finally {
       setIsApplying(false)
+    }
+  }
+
+  const handleRunTests = async () => {
+    if (!lastDirHandle) {
+      showErrorToast('No directory open.')
+      return
+    }
+
+    setIsRunningTests(true)
+    try {
+      await runApplyJsonChangesBDDTests(lastDirHandle)
+      showSuccessToast(
+        'All tests run successfully!, Check console for more information',
+      )
+
+      onClose()
+    } catch (error) {
+      console.error('Error running tests:', error)
+      showErrorToast('Error running tests!')
+    } finally {
+      setIsRunningTests(false)
     }
   }
 
@@ -151,7 +174,27 @@ export default function ApplyChangesModal({ open, onClose }: Props) {
           fullWidth
         />
 
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: 1 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            marginTop: 1,
+            gap: 1.5,
+          }}
+        >
+          <Tooltip title="Run test cases relevant to code changes JSON format; All Changes will be applied into 'test' directory!">
+            <span>
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={handleRunTests}
+                disabled={isRunningTests || !lastDirHandle}
+              >
+                {isRunningTests ? 'Running...' : 'Run Tests'}
+              </Button>
+            </span>
+          </Tooltip>
+
           <Tooltip title="Apply the changes to your open directory">
             <span>
               <Button

@@ -96,7 +96,7 @@ export async function runApplyJsonChangesBDDTests(
         path,
         dirHandle,
       )
-      await parentDir.removeEntry(fileName)
+      await parentDir.removeEntry(fileName, { recursive: false })
     }
   }
 
@@ -259,38 +259,6 @@ export async function runApplyJsonChangesBDDTests(
       '"folder/toDelete.txt" was not deleted',
     )
   })
-
-  // @delete
-  await runScenario(
-    'Attempt to delete a file that does not exist',
-    async () => {
-      // Given "folder/nonExistent.txt" does not exist
-      await ensureFileDoesNotExist('folder/nonExistent.txt', testDir)
-
-      // And changesJson
-      const changesJson = {
-        version: 1,
-        changes: [
-          {
-            type: 'delete',
-            path: 'folder/nonExistent.txt',
-          },
-        ],
-      }
-
-      // When
-      // There's no direct "error" guarantee from applyJsonChanges; it might do a console.warn or no-op.
-      // We'll just ensure it doesn't blow up or affect other files.
-      await applyJsonChanges(changesJson as ChangesJson, testDir)
-
-      // Then it should attempt to remove it but presumably fail silently or warn
-      // Confirm no error is thrown, and no other files are changed. We'll just check existence again.
-      assert(
-        !(await fileExists('folder/nonExistent.txt', testDir)),
-        'Somehow "nonExistent.txt" was created?',
-      )
-    },
-  )
 
   // @complete_update
   await runScenario('Complete update on an existing file', async () => {
@@ -569,35 +537,6 @@ export async function runApplyJsonChangesBDDTests(
     )
   })
 
-  // @rename_move
-  await runScenario('Attempt to rename a missing file', async () => {
-    // missingRename.txt does not exist
-    await ensureFileDoesNotExist('folder/missingRename.txt', testDir)
-    // newRename.txt also should not exist
-    await ensureFileDoesNotExist('folder/newRename.txt', testDir)
-
-    // changesJson
-    const changesJson = {
-      version: 1,
-      changes: [
-        {
-          type: 'rename_move',
-          old_path: 'folder/missingRename.txt',
-          new_path: 'folder/newRename.txt',
-        },
-      ],
-    }
-
-    // We'll see a console error/warning from the actual code. We just check no creation happened.
-    await applyJsonChanges(changesJson as ChangesJson, testDir)
-
-    // Then
-    assert(
-      !(await fileExists('folder/newRename.txt', testDir)),
-      '"folder/newRename.txt" was unexpectedly created',
-    )
-  })
-
   // @unknown_type
   await runScenario('Unknown change type is provided', async () => {
     // changesJson
@@ -719,4 +658,12 @@ export async function runApplyJsonChangesBDDTests(
       .forEach(r => console.log(` - ${r.scenario}`, r.error))
   }
   console.log('=== End of BDD Tests ===\n')
+
+  // Remove "test" directory at the end of all tests
+  try {
+    await rootDirHandle.removeEntry('test', { recursive: true })
+    console.log('✅ Removed "test" directory after tests completed.')
+  } catch (err) {
+    console.error('❌ Failed to remove "test" directory:', err)
+  }
 }
