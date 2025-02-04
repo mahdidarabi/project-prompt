@@ -1,4 +1,3 @@
-
 // <ai_context>
 //  A modal for creating/editing custom instructions. Allows adding new instructions,
 //  editing existing ones, and removing them if needed. All stored in localStorage via the store.
@@ -11,19 +10,17 @@ import {
   DialogTitle,
   IconButton,
   List,
-  ListItem,
   ListItemText,
   TextField,
   Button,
   Stack,
   Typography,
   ListItemSecondaryAction,
-  Tooltip
+  Tooltip,
 } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
-import DragIndicatorIcon from '@mui/icons-material/DragIndicator'
 import { styled } from '@mui/material/styles'
 import { useCustomInstructionsStore } from '../../store/customInstructionsStore'
 import { approximateTokens, formatTokenCount } from '../../utils/tokenHelpers'
@@ -36,12 +33,9 @@ import {
   useSensors,
   PointerSensor,
   DragEndEvent,
-  DragStartEvent
+  DragStartEvent,
 } from '@dnd-kit/core'
-import {
-  SortableContext,
-  verticalListSortingStrategy
-} from '@dnd-kit/sortable'
+import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 
 // We create a small SortableItem to handle individual list items
 import SortableCustomInstructionItem from './SortableCustomInstructionItem'
@@ -54,7 +48,7 @@ interface Props {
 const StyledDialogTitle = styled(DialogTitle)(() => ({
   display: 'flex',
   justifyContent: 'space-between',
-  alignItems: 'center'
+  alignItems: 'center',
 }))
 
 const ModalContent = styled(Box)(() => ({
@@ -65,7 +59,7 @@ const ModalContent = styled(Box)(() => ({
   flexDirection: 'column',
   gap: 16,
   minHeight: '400px',
-  maxHeight: '70vh'
+  maxHeight: '70vh',
 }))
 
 export default function CustomInstructionsModal({ open, onClose }: Props) {
@@ -74,7 +68,7 @@ export default function CustomInstructionsModal({ open, onClose }: Props) {
     addCustomInstruction,
     updateCustomInstruction,
     removeCustomInstruction,
-    reorderCustomInstructions
+    reorderCustomInstructions,
   } = useCustomInstructionsStore()
 
   const [isEditing, setIsEditing] = useState(false)
@@ -83,7 +77,7 @@ export default function CustomInstructionsModal({ open, onClose }: Props) {
   const [contentValue, setContentValue] = useState('')
 
   // We can store the item being dragged
-  const [activeDragId, setActiveDragId] = useState<string | null>(null)
+  const [_, setActiveDragId] = useState<string | null>(null)
 
   const handleClose = () => {
     resetForm()
@@ -161,7 +155,7 @@ export default function CustomInstructionsModal({ open, onClose }: Props) {
             border: 1,
             borderColor: 'divider',
             borderRadius: 1,
-            p: 0
+            p: 0,
           }}
         >
           {customInstructions.length === 0 && (
@@ -242,7 +236,7 @@ export default function CustomInstructionsModal({ open, onClose }: Props) {
             onChange={e => setContentValue(e.target.value)}
             variant="outlined"
             multiline
-            rows={5}
+            rows={8}
           />
           <Button variant="contained" onClick={handleSubmit}>
             {isEditing ? 'Update Instruction' : 'Add Instruction'}

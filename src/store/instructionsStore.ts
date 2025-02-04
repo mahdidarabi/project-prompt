@@ -76,26 +76,26 @@ export const useInstructionsStore = create<InstructionsState>()(
       },
 
       getFinalPrompt(loadedFiles, activeCustoms, includeTreeInPrompt) {
-        let final = get().instructions
+        let final = ''
 
-        if (activeCustoms.length > 0) {
-          final += '\n\n' + activeCustoms.map(ci => ci.content).join('\n\n')
-        }
+        if (activeCustoms.length > 0)
+          final += '\n' + activeCustoms.map(ci => ci.content).join('\n')
+
+        final += '\n' + get().instructions + '\n'
 
         if (loadedFiles.length > 0) {
           final +=
-            '\n\n' +
+            '\n' +
             loadedFiles
               .map(file => `---\nFile: ${file.path}\n${file.content}`)
-              .join('\n\n')
+              .join('\n')
         }
 
         if (includeTreeInPrompt && loadedFiles.length > 0) {
           const paths = loadedFiles.map(f => f.path)
+
           const ascii = buildAsciiTree(paths)
-          if (ascii.trim()) {
-            final += '\n\nLOADED FILES TREE:\n' + ascii
-          }
+          if (ascii.trim()) final += '\n\nFILES TREE:\n' + ascii
         }
 
         return final
@@ -107,6 +107,7 @@ export const useInstructionsStore = create<InstructionsState>()(
           activeCustoms,
           includeTreeInPrompt,
         )
+
         return approximateTokens(text)
       },
     }),
