@@ -32,6 +32,7 @@ import SelectedFilesList from './components/SelectedFilesList'
 import CustomInstructionsBar from './components/CustomInstructionsBar'
 import GlobalSnackbar from './components/GlobalSnackbar'
 import ApplyChangesModal from './components/modals/ApplyChangesModal'
+import PromptStoreModal from './components/modals/PromptStoreModal'
 
 const Wrapper = styled(Container)(() => ({
   display: 'flex',
@@ -71,6 +72,10 @@ export default function App() {
   const openChangesModal = () => setChangesModalOpen(true)
   const closeChangesModal = () => setChangesModalOpen(false)
 
+  const [promptStoreModalOpen, setPromptStoreModalOpen] = useState(false)
+  const openPromptStoreModal = () => setPromptStoreModalOpen(true)
+  const closePromptStoreModal = () => setPromptStoreModalOpen(false)
+
   return (
     <Wrapper maxWidth={false} disableGutters>
       {/* Top AppBar */}
@@ -93,6 +98,10 @@ export default function App() {
 
           {/* Spacer */}
           <Box sx={{ flex: 1 }} />
+
+          <Button variant="text" onClick={openPromptStoreModal} color="inherit">
+            Prompt Store
+          </Button>
 
           {/* "Apply Changes" button in the AppBar */}
           <Tooltip title="Apply code changes (XML)">
@@ -267,6 +276,12 @@ export default function App() {
 
       {/* Modal for applying XML changes */}
       <ApplyChangesModal open={changesModalOpen} onClose={closeChangesModal} />
+
+      {/* Modal for Prompt Store */}
+      <PromptStoreModal
+        open={promptStoreModalOpen}
+        onClose={closePromptStoreModal}
+      />
 
       {/* Global Snackbar for success/error messages */}
       <GlobalSnackbar />

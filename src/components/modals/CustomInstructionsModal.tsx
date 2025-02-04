@@ -201,11 +201,13 @@ export default function CustomInstructionsModal({ open, onClose }: Props) {
                               <EditIcon />
                             </IconButton>
                           </Tooltip>
+
                           <Tooltip title="Delete instruction">
                             <IconButton
                               edge="end"
                               aria-label="delete"
                               onClick={() => handleDelete(ci.id)}
+                              color="error"
                               sx={{ ml: 1 }}
                             >
                               <DeleteIcon />

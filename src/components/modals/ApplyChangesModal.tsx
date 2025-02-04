@@ -26,57 +26,23 @@ interface Props {
   onClose: () => void
 }
 
-const exampleJson = `<code_changes>
-  <changed_files>
-    <!-- Creating a new file -->
-    <file>
-      <file_operation>CREATE</file_operation>
-      <file_path>app/newPage.tsx</file_path>
-      <file_code><![CDATA[
-console.log("Hello from newly created file!")
-]]></file_code>
-    </file>
-
-    <!-- Deleting an old file -->
-    <file>
-      <file_operation>DELETE</file_operation>
-      <file_path>src/oldFile.ts</file_path>
-    </file>
-
-    <!-- Full-file update (legacy approach) -->
-    <file>
-      <file_operation>UPDATE</file_operation>
-      <file_path>src/store.ts</file_path>
-      <file_code><![CDATA[
-// Overwrite the entire file
-console.log("Store updated with entire new content!")
-]]></file_code>
-    </file>
-
-    <!-- Partial line updates (new approach) -->
-    <file>
-      <file_operation>UPDATE</file_operation>
-      <file_path>src/components/Example.tsx</file_path>
-      <diffs>
-        <diff>
-          <start_line>4</start_line>
-          <end_line>7</end_line>
-          <new_lines><![CDATA[
-console.log("some new line");
-console.log("another new line");
-]]></new_lines>
-        </diff>
-        <diff>
-          <start_line>10</start_line>
-          <end_line>10</end_line>
-          <new_lines><![CDATA[
-console.log("completely replaced line 10");
-]]></new_lines>
-        </diff>
-      </diffs>
-    </file>
-  </changed_files>
-</code_changes>`
+const exampleJson = `{
+  "version": 1,
+  "changes": [
+    {
+      "type": "create",
+      "path": "docs/intro.md",
+      "content": [
+        "# Introduction",
+        "This is a short intro file."
+      ]
+    },
+    {
+      "type": "delete",
+      "path": "src/unused-module.js"
+    }
+  ]
+}`
 
 const StyledDialogTitle = styled(DialogTitle)(() => ({
   display: 'flex',
@@ -150,7 +116,7 @@ export default function ApplyChangesModal({ open, onClose }: Props) {
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="lg" fullWidth>
       <StyledDialogTitle>
-        Apply XML Code Changes
+        Apply Code Changes in JSON Format
         <Tooltip title="Close">
           <IconButton onClick={handleClose}>
             <CloseIcon />
@@ -159,12 +125,10 @@ export default function ApplyChangesModal({ open, onClose }: Props) {
       </StyledDialogTitle>
 
       <ModalContent>
-        <Typography variant="body2">
-          Paste or edit your <strong>code_changes</strong> XML below:
-        </Typography>
+        <Typography variant="body2">Paste or edit your JSON below:</Typography>
 
         <TextField
-          label="XML Code Changes"
+          label="JSON Code Changes"
           multiline
           rows={12}
           value={jsonText}
