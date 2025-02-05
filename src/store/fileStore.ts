@@ -45,6 +45,7 @@ interface FileStoreState {
   toggleSelection: (path: string, handle: any, isDirectory: boolean) => void
   clearSelection: () => void
   loadSelectedFiles: () => Promise<void>
+  addAttachmentFile: (content: string) => void
 }
 
 async function buildFileTree(
@@ -87,19 +88,6 @@ async function buildFileTree(
   })
 
   return items
-}
-
-async function getDirectoryHandleRecursive(
-  baseHandle: FileSystemDirectoryHandle,
-  segments: string[],
-): Promise<FileSystemDirectoryHandle> {
-  let currentHandle = baseHandle
-  for (const segment of segments) {
-    currentHandle = await currentHandle.getDirectoryHandle(segment, {
-      create: true,
-    })
-  }
-  return currentHandle
 }
 
 export const useFileStore = create<FileStoreState>()(
@@ -346,6 +334,16 @@ export const useFileStore = create<FileStoreState>()(
         }
 
         set({ loadedFiles })
+      },
+      addAttachmentFile: (content: string) => {
+        const tokenCount = approximateTokens(content)
+        const newFile: LoadedFile = {
+          path: 'mergeRequestContext.md',
+          content,
+          tokenCount,
+        }
+        const { loadedFiles } = get()
+        set({ loadedFiles: [...loadedFiles, newFile] })
       },
     }),
     {

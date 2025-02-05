@@ -15,6 +15,7 @@ import {
 } from '@mui/material'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import VisibilityIcon from '@mui/icons-material/Visibility'
+import AttachMergeRequestModal from './modals/AttachMergeRequestModal'
 import { useInstructionsStore } from '../store/instructionsStore'
 import { useFileStore } from '../store/fileStore'
 import { useToastStore } from '../store/toastStore'
@@ -30,6 +31,9 @@ export default function InstructionsField() {
     getFinalPrompt,
     getFinalPromptTokens,
   } = useInstructionsStore()
+
+  const [attachModalOpen, setAttachModalOpen] = useState(false)
+
   const { includeTreeInPrompt, setIncludeTreeInPrompt, loadedFiles } =
     useFileStore()
   const { showSuccessToast } = useToastStore()
@@ -61,6 +65,10 @@ export default function InstructionsField() {
     setShowPromptModal(true)
   }
   const handleCloseModal = () => setShowPromptModal(false)
+
+  const handleCloseAttachModal = () => {
+    setAttachModalOpen(false)
+  }
 
   const handleCopyPrompt = async () => {
     if (localInstructions !== instructions) {
@@ -109,6 +117,15 @@ export default function InstructionsField() {
           label="Add files tree structure"
         />
 
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={() => setAttachModalOpen(true)}
+          sx={{ ml: 1 }}
+        >
+          Attach merge request context
+        </Button>
+
         <Stack direction="row" spacing={1}>
           <IconButton color="inherit" onClick={handleCopyPrompt}>
             <ContentCopyIcon />
@@ -128,6 +145,11 @@ export default function InstructionsField() {
         {/* We'll pass needed data to PromptGenerator */}
         <PromptGenerator />
       </Modal>
+
+      <AttachMergeRequestModal
+        open={attachModalOpen}
+        onClose={handleCloseAttachModal}
+      />
     </Box>
   )
 }

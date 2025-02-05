@@ -230,7 +230,7 @@ export default function App() {
               onClick={loadSelectedFiles}
               disabled={!lastDirHandle || selectedFiles.length === 0}
             >
-              Load Files
+              Attach Files
             </Button>
           </Box>
         </Box>

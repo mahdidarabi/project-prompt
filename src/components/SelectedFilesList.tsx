@@ -20,7 +20,7 @@ export default function SelectedFilesList() {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-        <Typography variant="subtitle1">Loaded Files</Typography>
+<Typography variant="subtitle1">Attachments section</Typography>
         <Typography variant="body2">
           Total: {formatTokenCount(totalTokens)} tokens
         </Typography>
